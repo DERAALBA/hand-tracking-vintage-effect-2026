@@ -87,7 +87,7 @@ function drawAnalogSignalImage(
 
   context.save();
   // Warm the source itself so faces and objects stay recognizable beneath the analog treatment.
-  context.filter = `sepia(${.66 + strength * .18}) saturate(${.58 - strength * .06}) contrast(${1.1 + strength * .06}) brightness(${.94 - strength * .045})`;
+  context.filter = `sepia(${.44 + strength * .08}) saturate(${.82 - strength * .05}) contrast(${1.06 + strength * .03}) brightness(${.98 - strength * .02})`;
   context.globalAlpha = .98;
   for (let row = 0; row < rows; row += 1) {
     const y = row * rowHeight;
@@ -103,11 +103,11 @@ function drawAnalogSignalImage(
   // Strong phosphor grading makes the active window unmistakably different from the normal camera.
   context.save();
   context.globalCompositeOperation = 'multiply';
-  context.globalAlpha = .16 + strength * .055;
+  context.globalAlpha = .1 + strength * .035;
   context.fillStyle = 'rgba(194, 126, 31, .92)';
   context.fillRect(0, 0, width, height);
   context.globalCompositeOperation = 'screen';
-  context.globalAlpha = .055 + strength * .025;
+  context.globalAlpha = .045 + strength * .018;
   context.fillStyle = 'rgba(255, 207, 91, .9)';
   context.fillRect(0, 0, width, height);
   context.restore();

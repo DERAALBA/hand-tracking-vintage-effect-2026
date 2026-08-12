@@ -68,6 +68,7 @@ export function CameraView({ stream }: CameraViewProps) {
     const draw = (now: number) => {
       frameAlpha.current += (targetFrameAlpha.current - frameAlpha.current) * (targetFrameAlpha.current > frameAlpha.current ? .12 : .19);
       if (video.videoWidth > 0 && video.videoHeight > 0) {
+        const activePreset = EFFECT_PRESETS[presetIndex.current] ?? EFFECT_PRESETS[DEFAULT_EFFECT_INDEX] ?? EFFECT_PRESETS[0];
         renderFrame({
           video,
           canvas,
@@ -77,7 +78,7 @@ export function CameraView({ stream }: CameraViewProps) {
           videoWidth: video.videoWidth,
           videoHeight: video.videoHeight,
           frame: frameRef.current,
-          preset: EFFECT_PRESETS[presetIndex.current],
+          preset: activePreset,
           frameAlpha: frameAlpha.current,
           now,
           transitionAt: transitionAt.current,

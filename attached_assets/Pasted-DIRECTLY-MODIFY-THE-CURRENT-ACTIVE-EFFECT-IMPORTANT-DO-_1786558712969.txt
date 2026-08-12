@@ -1,0 +1,464 @@
+DIRECTLY MODIFY THE CURRENT ACTIVE EFFECT.
+
+IMPORTANT:
+DO NOT ADD A NEW PRESET.
+DO NOT ADD A NEW EFFECT NAME.
+DO NOT JUST ADD CODE THAT IS NOT USED.
+
+I WANT YOU TO DIRECTLY CHANGE THE EXISTING VISUAL EFFECT
+THAT IS CURRENTLY RENDERING INSIDE THE HAND-CONTROLLED FRAME.
+
+==================================================
+MAIN REQUEST
+==================================================
+
+Take the CURRENT EFFECT INSIDE THE FRAME and REPLACE ITS
+VISUAL STYLE with a VINTAGE COLOR ANALOG TV EFFECT.
+
+I want to immediately SEE the difference after you finish.
+
+The current frame geometry, hand tracking and gestures are
+already correct.
+
+KEEP ALL OF THESE UNCHANGED:
+
+- MediaPipe hand tracking
+- two-hand tracking
+- four fingertip control
+- P1 → P2 → P3 → P4 frame
+- ribbon/bow-tie shape
+- self-intersecting frame
+- frame movement
+- frame rotation
+- frame scaling
+- hand smoothing
+- double tap effect switching
+- closed-hand frame disappearance
+- digital finger tracing
+- camera mirror/orientation
+
+ONLY CHANGE THE VISUAL CONTENT RENDERED INSIDE THE FRAME.
+
+==================================================
+DO NOT CREATE A NEW PRESET
+==================================================
+
+DO NOT create:
+
+OLD_CRT
+ANALOG_TV
+VINTAGE_TV
+CRT_PRESET
+
+as a separate unused effect.
+
+DO NOT simply add another item to the effects array.
+
+Instead:
+
+FIND THE CURRENT EFFECT THAT IS ACTUALLY BEING RENDERED
+INSIDE THE FRAME.
+
+MODIFY THAT EFFECT DIRECTLY.
+
+The existing active effect must now LOOK like the vintage
+color TV effect described below.
+
+==================================================
+VINTAGE COLOR TV LOOK
+==================================================
+
+The image must remain FULL COLOR.
+
+Absolutely NO:
+
+- black and white
+- grayscale
+- monochrome
+- pure sepia
+- desaturated security-camera look.
+
+Keep the original RGB information.
+
+Then apply a strong warm analog color treatment.
+
+Desired palette:
+
+warm yellow
+amber
+golden
+cream
+slightly brown shadows.
+
+The image should look like an old COLOR television from
+the 1970s–1990s that has aged over time.
+
+Think:
+
+OLD COLOR CRT TELEVISION.
+
+Not:
+
+black-and-white television.
+
+==================================================
+COLOR PROCESSING
+==================================================
+
+Modify the actual fragment shader color output.
+
+Do NOT simply put a CSS filter over the camera.
+
+Preserve the original colors.
+
+Apply approximately:
+
+- slightly reduced saturation
+- warm yellow/amber color grading
+- warm highlights
+- slightly brown/dark shadows
+- faded contrast
+- subtle phosphor warmth.
+
+Skin should remain skin-colored.
+
+Clothes should remain recognizable.
+
+Background should remain recognizable.
+
+But everything should feel warm and old.
+
+==================================================
+CRT SCANLINES
+==================================================
+
+Add REAL procedural horizontal scanlines to the CURRENT shader.
+
+Use UV coordinates and time.
+
+The scanlines must be visible.
+
+They should be:
+
+thin
+horizontal
+semi-transparent
+animated
+slightly irregular.
+
+Do NOT use a static image overlay.
+
+==================================================
+ANALOG GRAIN
+==================================================
+
+Add procedural animated analog grain directly to the shader.
+
+The grain should constantly change.
+
+Use:
+
+UV + TIME
+
+to generate the noise.
+
+Make it clearly visible but not overwhelming.
+
+==================================================
+OLD TV SIGNAL DISTORTION
+==================================================
+
+Add subtle horizontal analog signal displacement.
+
+Different horizontal bands should occasionally shift
+slightly left/right.
+
+The image should briefly wobble like an old television
+receiving an imperfect signal.
+
+Keep the face recognizable.
+
+==================================================
+RGB MISALIGNMENT
+==================================================
+
+Modify the actual texture sampling.
+
+Sample:
+
+RED slightly offset.
+
+GREEN near original.
+
+BLUE slightly offset in the opposite direction.
+
+This should look like old analog television signal
+misalignment.
+
+Keep it subtle and warm.
+
+==================================================
+VINTAGE FLICKER
+==================================================
+
+Add subtle brightness variation over time.
+
+The screen should feel electrically alive.
+
+Do NOT make it flash aggressively.
+
+==================================================
+WARM CRT GLOW
+==================================================
+
+Add a subtle warm phosphor-like glow.
+
+Bright parts of the image should slightly bloom.
+
+Use:
+
+yellow
+amber
+cream.
+
+No modern neon glow.
+
+==================================================
+ELECTRICAL STATIC / SPARKS
+==================================================
+
+Add actual visible small sparks INSIDE THE FRAME.
+
+These are NOT UI elements.
+
+These are visual particles.
+
+Create a lightweight canvas/WebGL particle layer clipped
+to the SAME existing frame mask.
+
+The sparks should be:
+
+small
+bright
+yellow-white
+amber
+short-lived.
+
+Some are tiny dots.
+
+Some are short electrical streaks.
+
+Some can have tiny branching shapes.
+
+Behavior:
+
+appear
+→ flash
+→ move slightly
+→ fade
+→ disappear.
+
+Use random positions and lifetimes.
+
+Approximately 10–25 visible particles at a time.
+
+Do NOT create hundreds of DOM elements.
+
+==================================================
+VINTAGE DUST / STATIC
+==================================================
+
+Add tiny flickering particles/pixels.
+
+Some should briefly appear and disappear.
+
+Use:
+
+cream
+yellow
+dark brown
+white.
+
+Keep them subtle.
+
+==================================================
+CRT VIGNETTE
+==================================================
+
+Make the edges slightly darker than the center.
+
+Center:
+
+warm and visible.
+
+Edges:
+
+slightly dark brown/amber.
+
+This should create the feeling of looking through
+an old CRT screen.
+
+==================================================
+IMPORTANT: EFFECT MUST BE INSIDE FRAME ONLY
+==================================================
+
+The vintage effect MUST be clipped to the CURRENT
+hand-controlled frame.
+
+Outside frame:
+
+NORMAL LIVE COLOR CAMERA.
+
+Inside frame:
+
+VINTAGE COLOR CRT.
+
+The frame can be:
+
+rectangle
+diamond
+rotated
+ribbon
+bow-tie.
+
+The effect must follow the exact existing frame geometry.
+
+DO NOT replace the frame with a rectangle.
+
+==================================================
+CRITICAL RENDERING REQUIREMENT
+==================================================
+
+Find the ACTUAL rendering pipeline.
+
+Trace:
+
+camera
+→ WebGL texture
+→ fragment shader
+→ distortion
+→ frame mask
+→ final composite.
+
+Modify the fragment shader that is ACTUALLY responsible
+for the pixels inside the frame.
+
+If there are multiple shader/effect files, identify which
+one is currently active.
+
+Do not create a disconnected implementation.
+
+==================================================
+MAKE THE CHANGE IMMEDIATELY VISIBLE
+==================================================
+
+After modifying the shader:
+
+temporarily force the CURRENT ACTIVE EFFECT to use the
+new vintage color-TV treatment.
+
+Do not require me to select another preset.
+
+Do not require me to click a new button.
+
+Do not require me to change configuration.
+
+When I open the camera and create the frame:
+
+I MUST immediately see:
+
+WARM YELLOW/AMBER COLOR TV
++
+SCANLINES
++
+ANALOG GRAIN
++
+STATIC
++
+SIGNAL DISTORTION
++
+RGB MISALIGNMENT
++
+SMALL ELECTRICAL SPARKS.
+
+==================================================
+VERY IMPORTANT
+==================================================
+
+If the result still looks exactly like the old effect,
+then the wrong rendering code was modified.
+
+In that case:
+
+TRACE THE CURRENT RENDERING PIPELINE AGAIN.
+
+Find the shader/function that actually outputs the pixels
+inside the hand-controlled frame.
+
+Modify THAT code.
+
+Do not stop after creating a new variable or preset.
+
+==================================================
+DO NOT CHANGE
+==================================================
+
+DO NOT modify:
+
+hand tracking
+MediaPipe
+landmark coordinates
+smoothing
+gesture detection
+frame geometry
+ribbon/bow-tie behavior
+camera orientation
+mirror logic
+double tap
+closed-hand detection
+digital hand lines.
+
+ONLY replace the CURRENT VISUAL EFFECT INSIDE THE FRAME.
+
+==================================================
+FINAL VISUAL TARGET
+==================================================
+
+OUTSIDE FRAME:
+
+normal full-color webcam.
+
+INSIDE FRAME:
+
+old COLOR television.
+
+The inside image should be:
+
+warm yellow/amber
++
+still colorful
++
+slightly faded
++
+CRT scanlines
++
+analog grain
++
+small static
++
+tiny electrical sparks
++
+subtle RGB misalignment
++
+soft flicker
++
+slight signal wobble
++
+warm CRT glow.
+
+It should immediately look different from the current
+effect.
+
+DO NOT JUST ADD A PRESET.
+
+DIRECTLY MODIFY THE CURRENT ACTIVE EFFECT NOW.
