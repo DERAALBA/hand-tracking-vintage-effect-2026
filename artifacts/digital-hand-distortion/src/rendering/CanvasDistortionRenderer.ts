@@ -87,8 +87,8 @@ function drawAnalogSignalImage(
 
   context.save();
   // Warm the source itself so faces and objects stay recognizable beneath the analog treatment.
-  context.filter = `sepia(${.38 + strength * .08}) saturate(${.74 - strength * .06}) contrast(${1.02 + strength * .04}) brightness(${.99 - strength * .035})`;
-  context.globalAlpha = .96;
+  context.filter = `sepia(${.66 + strength * .18}) saturate(${.58 - strength * .06}) contrast(${1.1 + strength * .06}) brightness(${.94 - strength * .045})`;
+  context.globalAlpha = .98;
   for (let row = 0; row < rows; row += 1) {
     const y = row * rowHeight;
     const wave = Math.sin(row * .39 + pulse * 1.25) * width * (.0022 + strength * .0012);
@@ -100,11 +100,23 @@ function drawAnalogSignalImage(
   }
   context.restore();
 
+  // Strong phosphor grading makes the active window unmistakably different from the normal camera.
+  context.save();
+  context.globalCompositeOperation = 'multiply';
+  context.globalAlpha = .16 + strength * .055;
+  context.fillStyle = 'rgba(194, 126, 31, .92)';
+  context.fillRect(0, 0, width, height);
+  context.globalCompositeOperation = 'screen';
+  context.globalAlpha = .055 + strength * .025;
+  context.fillStyle = 'rgba(255, 207, 91, .9)';
+  context.fillRect(0, 0, width, height);
+  context.restore();
+
   // A short phosphor trail gives moving faces a soft, aged persistence without becoming blur.
   context.save();
   context.globalCompositeOperation = 'screen';
-  context.globalAlpha = .045 + strength * .018;
-  context.filter = 'sepia(.6) saturate(.5) blur(1px)';
+  context.globalAlpha = .07 + strength * .028;
+  context.filter = 'sepia(.72) saturate(.66) blur(1.2px)';
   const ghostX = Math.sin(pulse * .8) * (1.2 + strength * 1.5);
   const ghostY = Math.sin(pulse * .45) * .7;
   context.drawImage(source, ghostX, ghostY, width, height);
@@ -119,14 +131,14 @@ function drawAnalogChromaticMisalignment(
   strength: number,
   now: number,
 ) {
-  const shift = (1.3 + Math.sin(now * .0021) * .45) * strength;
+  const shift = (2.6 + Math.sin(now * .0021) * .8) * strength;
   context.save();
   context.globalCompositeOperation = 'screen';
-  context.globalAlpha = .07 + strength * .025;
-  context.filter = 'sepia(.3) saturate(.7) hue-rotate(-18deg)';
+  context.globalAlpha = .115 + strength * .03;
+  context.filter = 'sepia(.22) saturate(.84) hue-rotate(-22deg)';
   context.drawImage(source, -shift, Math.sin(now * .0013) * .35, width, height);
-  context.filter = 'sepia(.22) saturate(.62) hue-rotate(26deg)';
-  context.globalAlpha = .055 + strength * .02;
+  context.filter = 'sepia(.18) saturate(.82) hue-rotate(31deg)';
+  context.globalAlpha = .09 + strength * .024;
   context.drawImage(source, shift * 1.35, -Math.sin(now * .0011) * .35, width, height);
   context.restore();
 }
@@ -147,7 +159,7 @@ function drawCrtScanlines(
   context.lineWidth = Math.max(1, height / 1100);
   for (let y = -gap; y < height + gap; y += gap) {
     const variance = .55 + .45 * Math.sin(y * .047 + now * .0015);
-    context.globalAlpha = (.045 + preset.scan * .34) * variance;
+    context.globalAlpha = (.075 + preset.scan * .6) * variance;
     context.strokeStyle = 'rgba(87, 56, 17, .78)';
     context.beginPath();
     context.moveTo(0, y + drift);
@@ -166,7 +178,7 @@ function drawAnalogNoise(
 ) {
   const strength = preset.crtStrength ?? .8;
   const grainBucket = Math.floor(now / 55);
-  const particleCount = strength > 1 ? 300 : 190;
+  const particleCount = strength > 1 ? 520 : 390;
 
   context.save();
   context.globalCompositeOperation = 'screen';
@@ -174,8 +186,8 @@ function drawAnalogNoise(
     const seed = grainBucket * .91 + index * 17.17;
     const x = pseudoRandom(seed) * width;
     const y = pseudoRandom(seed + 3.7) * height;
-    const size = .35 + pseudoRandom(seed + 8.2) * (strength > 1 ? 1.35 : .9);
-    const bright = .06 + pseudoRandom(seed + 12.8) * (.15 + strength * .06);
+    const size = .5 + pseudoRandom(seed + 8.2) * (strength > 1 ? 1.65 : 1.25);
+    const bright = .1 + pseudoRandom(seed + 12.8) * (.2 + strength * .08);
     context.globalAlpha = bright;
     context.fillStyle = pseudoRandom(seed + 4.4) > .18
       ? 'rgba(255, 225, 162, .9)'
@@ -195,46 +207,49 @@ function drawAnalogSparks(
   const strength = preset.crtStrength ?? .8;
   const bucketDuration = 145;
   const bucket = Math.floor(now / bucketDuration);
-  const sparks = strength > 1 ? 18 : 11;
+  const sparks = strength > 1 ? 24 : 18;
 
   context.save();
   context.globalCompositeOperation = 'screen';
   context.lineCap = 'round';
-  for (let index = 0; index < sparks; index += 1) {
-    const seed = bucket * 19.17 + index * 31.41;
-    const start = bucket * bucketDuration + pseudoRandom(seed) * 125;
-    const lifetime = 80 + pseudoRandom(seed + 2.4) * 220;
-    const age = now - start;
-    if (age < 0 || age > lifetime) continue;
+  for (let bucketOffset = 0; bucketOffset < 2; bucketOffset += 1) {
+    const sparkBucket = bucket - bucketOffset;
+    for (let index = 0; index < sparks; index += 1) {
+      const seed = sparkBucket * 19.17 + index * 31.41;
+      const start = sparkBucket * bucketDuration + pseudoRandom(seed) * 125;
+      const lifetime = 80 + pseudoRandom(seed + 2.4) * 220;
+      const age = now - start;
+      if (age < 0 || age > lifetime) continue;
 
-    const lifeProgress = age / lifetime;
-    const fade = Math.sin(Math.PI * lifeProgress);
-    const x = pseudoRandom(seed + 5.2) * width;
-    const y = pseudoRandom(seed + 9.8) * height;
-    const length = 2 + pseudoRandom(seed + 13.4) * (5 + strength * 12);
-    const angle = (pseudoRandom(seed + 16.9) - .5) * Math.PI;
-    const size = .7 + pseudoRandom(seed + 21.6) * (1.4 + strength);
+      const lifeProgress = age / lifetime;
+      const fade = Math.sin(Math.PI * lifeProgress);
+      const x = pseudoRandom(seed + 5.2) * width;
+      const y = pseudoRandom(seed + 9.8) * height;
+      const length = 2 + pseudoRandom(seed + 13.4) * (5 + strength * 12);
+      const angle = (pseudoRandom(seed + 16.9) - .5) * Math.PI;
+      const size = .7 + pseudoRandom(seed + 21.6) * (1.4 + strength);
 
-    context.globalAlpha = fade * (.35 + pseudoRandom(seed + 25.1) * .65);
-    context.strokeStyle = pseudoRandom(seed + 27.7) > .1
-      ? 'rgba(255, 220, 132, .95)'
-      : 'rgba(213, 246, 236, .9)';
-    context.lineWidth = size;
-    context.beginPath();
-    context.moveTo(x, y);
-    context.lineTo(x + Math.cos(angle) * length, y + Math.sin(angle) * length);
-    context.stroke();
-
-    if (pseudoRandom(seed + 30.3) > .7) {
+      context.globalAlpha = fade * (.42 + pseudoRandom(seed + 25.1) * .58);
+      context.strokeStyle = pseudoRandom(seed + 27.7) > .08
+        ? 'rgba(255, 220, 132, .98)'
+        : 'rgba(213, 246, 236, .95)';
+      context.lineWidth = size;
       context.beginPath();
-      context.moveTo(x + Math.cos(angle) * length * .35, y + Math.sin(angle) * length * .35);
-      context.lineTo(x + Math.cos(angle + .7) * length * .7, y + Math.sin(angle + .7) * length * .7);
+      context.moveTo(x, y);
+      context.lineTo(x + Math.cos(angle) * length, y + Math.sin(angle) * length);
       context.stroke();
+
+      if (pseudoRandom(seed + 30.3) > .62) {
+        context.beginPath();
+        context.moveTo(x + Math.cos(angle) * length * .35, y + Math.sin(angle) * length * .35);
+        context.lineTo(x + Math.cos(angle + .7) * length * .7, y + Math.sin(angle + .7) * length * .7);
+        context.stroke();
+      }
+      context.fillStyle = 'rgba(255, 245, 207, .98)';
+      context.beginPath();
+      context.arc(x, y, size * 1.35, 0, Math.PI * 2);
+      context.fill();
     }
-    context.fillStyle = 'rgba(255, 245, 207, .95)';
-    context.beginPath();
-    context.arc(x, y, size * 1.2, 0, Math.PI * 2);
-    context.fill();
   }
   context.restore();
 }
@@ -251,7 +266,7 @@ function drawCrtVignette(
   const gradient = context.createRadialGradient(width * .5, height * .47, Math.min(width, height) * .12, width * .5, height * .5, Math.max(width, height) * .68);
   gradient.addColorStop(0, `rgba(255, 236, 175, ${Math.max(0, (flicker - .98) * .22)})`);
   gradient.addColorStop(.58, 'rgba(102, 62, 19, .02)');
-  gradient.addColorStop(1, `rgba(24, 14, 5, ${.19 + strength * .08})`);
+  gradient.addColorStop(1, `rgba(24, 14, 5, ${.28 + strength * .12})`);
 
   context.save();
   context.globalCompositeOperation = 'multiply';

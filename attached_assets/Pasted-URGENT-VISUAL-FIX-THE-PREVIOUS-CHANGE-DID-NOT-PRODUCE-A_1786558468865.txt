@@ -1,0 +1,388 @@
+URGENT VISUAL FIX — THE PREVIOUS CHANGE DID NOT PRODUCE ANY VISIBLE DIFFERENCE.
+
+DO NOT JUST ADD A NEW EFFECT NAME.
+DO NOT JUST ADD A PRESET THAT IS NOT CONNECTED TO THE RENDERING PIPELINE.
+
+I NEED TO SEE A CLEAR, OBVIOUS VISUAL CHANGE INSIDE THE HAND-CONTROLLED FRAME.
+
+The current hand tracking and frame are already GOOD.
+KEEP THEM EXACTLY AS THEY ARE.
+
+ONLY MODIFY THE ACTUAL VISUAL RENDERING INSIDE THE FRAME.
+
+====================================================
+MAIN GOAL
+====================================================
+
+When the current effect is selected, the image INSIDE the
+hand-controlled frame must visibly look like an OLD YELLOW CRT TV.
+
+It must NOT look like the current normal camera.
+
+I want a very obvious:
+
+OLD ANALOG TELEVISION
++
+YELLOW/AMBER CRT
++
+STATIC
++
+SCANLINES
++
+ELECTRICAL SPARKS
++
+SIGNAL INTERFERENCE
++
+RGB MISALIGNMENT
++
+ANALOG GLITCH.
+
+====================================================
+IMPORTANT: CONNECT IT TO THE ACTUAL SHADER
+====================================================
+
+Find the ACTUAL WebGL fragment shader / camera texture shader
+that currently renders the distortion inside the four-point frame.
+
+Modify THAT shader.
+
+Do NOT create an unused CSS filter.
+
+Do NOT create an unused React component.
+
+Do NOT create an unused effect preset.
+
+Do NOT simply change a variable name.
+
+The selected effect MUST directly change the fragment shader output.
+
+The visual output of the shader must change dramatically.
+
+====================================================
+FORCED OLD CRT COLOR
+====================================================
+
+For this effect, convert the camera image inside the frame
+to a warm old-TV palette.
+
+Use a color transformation similar to:
+
+warm amber highlights
+yellow midtones
+brown/dark shadows
+slightly reduced saturation.
+
+The final result should immediately look yellow/amber.
+
+IMPORTANT:
+
+Make the color difference obvious.
+
+Do NOT make the effect so subtle that it looks unchanged.
+
+Use a strong but attractive amber treatment.
+
+====================================================
+CRT SCANLINES
+====================================================
+
+Generate REAL procedural scanlines in the fragment shader.
+
+Use screen UV Y coordinate.
+
+Create horizontal alternating brightness bands.
+
+Example concept:
+
+float scanline = sin(uv.y * SCREEN_HEIGHT * 0.8);
+
+Use it to modulate the image brightness.
+
+The scanlines must be clearly visible.
+
+They should move subtly over time.
+
+Do NOT use a static PNG overlay.
+
+====================================================
+ANIMATED CRT NOISE
+====================================================
+
+Generate procedural animated noise directly in the shader.
+
+Use:
+
+UV
++
+TIME
+
+to generate changing noise.
+
+The noise should be visible as:
+
+tiny white/yellow/black static particles.
+
+The noise must change every frame.
+
+It must not be a static texture.
+
+====================================================
+TV SIGNAL DISTORTION
+====================================================
+
+Add horizontal signal displacement.
+
+Certain horizontal bands of the image should shift sideways.
+
+Use procedural noise based on:
+
+uv.y
++
+time.
+
+Some lines should move slightly left/right.
+
+The effect should resemble an unstable analog TV signal.
+
+====================================================
+RGB SIGNAL MISALIGNMENT
+====================================================
+
+Sample the camera texture multiple times.
+
+For example:
+
+R channel = UV + offset
+G channel = UV
+B channel = UV - offset
+
+The offsets should vary slightly using:
+
+time
++
+noise.
+
+Make the RGB separation visible but not ridiculous.
+
+====================================================
+OLD TV FLICKER
+====================================================
+
+Add animated brightness flicker.
+
+Use TIME to create subtle random-looking fluctuations.
+
+The image should feel electrically unstable.
+
+====================================================
+ELECTRICAL SPARKS
+====================================================
+
+THIS MUST BE VISIBLY PRESENT.
+
+Add small bright electrical/static sparks INSIDE THE FRAME.
+
+Use a separate lightweight Canvas/WebGL particle layer clipped
+to the SAME hand-controlled frame.
+
+Create approximately:
+
+10–30 small particles.
+
+Each particle:
+
+- random position
+- random direction
+- short lifetime
+- bright yellow/white
+- tiny size
+- fades quickly.
+
+Some particles should look like:
+
+tiny electrical streaks
+
+rather than just circles.
+
+Example:
+
+      ✦
+          ·
+   ──✧
+              ·
+       ✦
+
+The sparks should:
+
+appear
+→ flash
+→ move slightly
+→ disappear.
+
+They must be clearly visible.
+
+====================================================
+CRT VIGNETTE
+====================================================
+
+Darken the edges of the frame.
+
+Center:
+
+brighter.
+
+Edges:
+
+darker.
+
+Use smooth radial falloff.
+
+====================================================
+CRT GLOW
+====================================================
+
+Add subtle warm phosphor glow.
+
+Bright pixels should slightly bleed into neighboring pixels.
+
+Do NOT make it neon.
+
+It should feel like an old CRT phosphor screen.
+
+====================================================
+GRAIN
+====================================================
+
+Add visible fine film/TV grain.
+
+Not too strong.
+
+But it MUST be visible.
+
+====================================================
+IMPORTANT: ONLY INSIDE THE FRAME
+====================================================
+
+All CRT effects MUST be clipped to the existing
+hand-controlled distortion geometry.
+
+Outside the frame:
+
+NORMAL CAMERA.
+
+Inside:
+
+OLD CRT.
+
+If the frame becomes:
+
+rectangle
+diamond
+ribbon
+bow-tie
+
+the CRT effect follows EXACTLY that shape.
+
+====================================================
+MAKE THIS THE CURRENT EFFECT
+====================================================
+
+Do NOT merely add "OLD CRT" as an unused option.
+
+For debugging, temporarily make OLD CRT the DEFAULT EFFECT.
+
+When the application starts and the user creates the frame:
+
+THE FRAME MUST IMMEDIATELY SHOW THE OLD CRT EFFECT.
+
+This is required so I can visually confirm that the shader works.
+
+After confirming it works, keep it as one of the normal effect presets.
+
+====================================================
+VISUAL CHECK
+====================================================
+
+After implementing this, the inside of the frame should
+OBVIOUSLY look different from the camera outside.
+
+Outside:
+
+normal webcam.
+
+Inside:
+
+strong warm yellow/amber CRT.
+
+Visible scanlines.
+
+Visible grain.
+
+Visible static.
+
+Visible RGB separation.
+
+Visible horizontal signal distortion.
+
+Occasional electrical sparks.
+
+Subtle flicker.
+
+If I cannot immediately see the difference with my eyes,
+THE IMPLEMENTATION IS NOT COMPLETE.
+
+====================================================
+DO NOT TOUCH
+====================================================
+
+Do NOT modify:
+
+MediaPipe tracking
+landmark detection
+smoothing
+four fingertip positions
+frame geometry
+ribbon/bow-tie behavior
+camera mirroring
+camera orientation
+double tap
+closed hand detection
+digital hand contour.
+
+KEEP ALL OF THOSE EXACTLY AS THEY CURRENTLY WORK.
+
+====================================================
+IMPLEMENTATION PRIORITY
+====================================================
+
+1. Modify the actual fragment shader.
+2. Connect OLD CRT to the actual effect-selection logic.
+3. Make OLD CRT the temporary default effect.
+4. Add procedural scanlines.
+5. Add procedural noise.
+6. Add amber color grading.
+7. Add RGB misalignment.
+8. Add horizontal analog distortion.
+9. Add flicker.
+10. Add visible electrical sparks clipped to the frame.
+
+====================================================
+FINAL TEST
+====================================================
+
+I should be able to immediately see:
+
+NORMAL CAMERA
+outside the frame
+
+and
+
+YELLOW OLD CRT TV
+inside the frame.
+
+If the result still looks like the previous version,
+do NOT tell me it is complete.
+
+Inspect the actual render pipeline and fix the shader connection.
+
+MAKE THE VISUAL DIFFERENCE OBVIOUS.

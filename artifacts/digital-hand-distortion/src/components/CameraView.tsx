@@ -5,6 +5,7 @@ import type { TrackingFrame } from '../types';
 import { renderFrame } from '../rendering/CanvasDistortionRenderer';
 
 const DEBUG = false;
+const DEFAULT_EFFECT_INDEX = Math.max(0, EFFECT_PRESETS.findIndex((preset) => preset.mode === 'crt'));
 
 type CameraViewProps = { stream: MediaStream };
 
@@ -13,7 +14,7 @@ export function CameraView({ stream }: CameraViewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sourceRef = useRef<HTMLCanvasElement | null>(null);
   const frameRef = useRef<TrackingFrame>({ left: null, right: null, timestamp: 0 });
-  const presetIndex = useRef(0);
+  const presetIndex = useRef(DEFAULT_EFFECT_INDEX);
   const frameAlpha = useRef(0);
   const targetFrameAlpha = useRef(0);
   const transitionAt = useRef(0);
