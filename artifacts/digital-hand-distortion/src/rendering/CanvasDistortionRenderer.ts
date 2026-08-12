@@ -66,6 +66,218 @@ function drawChromaticGhost(context: CanvasRenderingContext2D, source: HTMLCanva
   context.restore();
 }
 
+function pseudoRandom(seed: number) {
+  const value = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+  return value - Math.floor(value);
+}
+
+function drawAnalogSignalImage(
+  context: CanvasRenderingContext2D,
+  source: HTMLCanvasElement,
+  width: number,
+  height: number,
+  preset: EffectPreset,
+  now: number,
+) {
+  const strength = preset.crtStrength ?? .8;
+  const rows = strength > 1 ? 44 : 54;
+  const rowHeight = height / rows;
+  const pulse = now * .001;
+  const signalBucket = Math.floor(now / 185);
+
+  context.save();
+  // Warm the source itself so faces and objects stay recognizable beneath the analog treatment.
+  context.filter = `sepia(${.38 + strength * .08}) saturate(${.74 - strength * .06}) contrast(${1.02 + strength * .04}) brightness(${.99 - strength * .035})`;
+  context.globalAlpha = .96;
+  for (let row = 0; row < rows; row += 1) {
+    const y = row * rowHeight;
+    const wave = Math.sin(row * .39 + pulse * 1.25) * width * (.0022 + strength * .0012);
+    const tracking = Math.sin(row * .11 - pulse * .72) * height * (.0006 + strength * .00045);
+    const unstable = pseudoRandom(signalBucket * 7.1 + row * .83) > .982
+      ? (pseudoRandom(signalBucket * 11.3 + row) - .5) * width * (.018 + strength * .012)
+      : 0;
+    context.drawImage(source, 0, y, width, rowHeight + 1, wave + unstable, y + tracking, width, rowHeight + 1);
+  }
+  context.restore();
+
+  // A short phosphor trail gives moving faces a soft, aged persistence without becoming blur.
+  context.save();
+  context.globalCompositeOperation = 'screen';
+  context.globalAlpha = .045 + strength * .018;
+  context.filter = 'sepia(.6) saturate(.5) blur(1px)';
+  const ghostX = Math.sin(pulse * .8) * (1.2 + strength * 1.5);
+  const ghostY = Math.sin(pulse * .45) * .7;
+  context.drawImage(source, ghostX, ghostY, width, height);
+  context.restore();
+}
+
+function drawAnalogChromaticMisalignment(
+  context: CanvasRenderingContext2D,
+  source: HTMLCanvasElement,
+  width: number,
+  height: number,
+  strength: number,
+  now: number,
+) {
+  const shift = (1.3 + Math.sin(now * .0021) * .45) * strength;
+  context.save();
+  context.globalCompositeOperation = 'screen';
+  context.globalAlpha = .07 + strength * .025;
+  context.filter = 'sepia(.3) saturate(.7) hue-rotate(-18deg)';
+  context.drawImage(source, -shift, Math.sin(now * .0013) * .35, width, height);
+  context.filter = 'sepia(.22) saturate(.62) hue-rotate(26deg)';
+  context.globalAlpha = .055 + strength * .02;
+  context.drawImage(source, shift * 1.35, -Math.sin(now * .0011) * .35, width, height);
+  context.restore();
+}
+
+function drawCrtScanlines(
+  context: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  preset: EffectPreset,
+  now: number,
+) {
+  const strength = preset.crtStrength ?? .8;
+  const gap = Math.max(4, Math.round(height / (strength > 1 ? 155 : 185)));
+  const drift = Math.sin(now * .0007) * gap;
+
+  context.save();
+  context.globalCompositeOperation = 'multiply';
+  context.lineWidth = Math.max(1, height / 1100);
+  for (let y = -gap; y < height + gap; y += gap) {
+    const variance = .55 + .45 * Math.sin(y * .047 + now * .0015);
+    context.globalAlpha = (.045 + preset.scan * .34) * variance;
+    context.strokeStyle = 'rgba(87, 56, 17, .78)';
+    context.beginPath();
+    context.moveTo(0, y + drift);
+    context.lineTo(width, y + drift);
+    context.stroke();
+  }
+  context.restore();
+}
+
+function drawAnalogNoise(
+  context: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  preset: EffectPreset,
+  now: number,
+) {
+  const strength = preset.crtStrength ?? .8;
+  const grainBucket = Math.floor(now / 55);
+  const particleCount = strength > 1 ? 300 : 190;
+
+  context.save();
+  context.globalCompositeOperation = 'screen';
+  for (let index = 0; index < particleCount; index += 1) {
+    const seed = grainBucket * .91 + index * 17.17;
+    const x = pseudoRandom(seed) * width;
+    const y = pseudoRandom(seed + 3.7) * height;
+    const size = .35 + pseudoRandom(seed + 8.2) * (strength > 1 ? 1.35 : .9);
+    const bright = .06 + pseudoRandom(seed + 12.8) * (.15 + strength * .06);
+    context.globalAlpha = bright;
+    context.fillStyle = pseudoRandom(seed + 4.4) > .18
+      ? 'rgba(255, 225, 162, .9)'
+      : 'rgba(57, 40, 19, .72)';
+    context.fillRect(x, y, size, size);
+  }
+  context.restore();
+}
+
+function drawAnalogSparks(
+  context: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  preset: EffectPreset,
+  now: number,
+) {
+  const strength = preset.crtStrength ?? .8;
+  const bucketDuration = 145;
+  const bucket = Math.floor(now / bucketDuration);
+  const sparks = strength > 1 ? 18 : 11;
+
+  context.save();
+  context.globalCompositeOperation = 'screen';
+  context.lineCap = 'round';
+  for (let index = 0; index < sparks; index += 1) {
+    const seed = bucket * 19.17 + index * 31.41;
+    const start = bucket * bucketDuration + pseudoRandom(seed) * 125;
+    const lifetime = 80 + pseudoRandom(seed + 2.4) * 220;
+    const age = now - start;
+    if (age < 0 || age > lifetime) continue;
+
+    const lifeProgress = age / lifetime;
+    const fade = Math.sin(Math.PI * lifeProgress);
+    const x = pseudoRandom(seed + 5.2) * width;
+    const y = pseudoRandom(seed + 9.8) * height;
+    const length = 2 + pseudoRandom(seed + 13.4) * (5 + strength * 12);
+    const angle = (pseudoRandom(seed + 16.9) - .5) * Math.PI;
+    const size = .7 + pseudoRandom(seed + 21.6) * (1.4 + strength);
+
+    context.globalAlpha = fade * (.35 + pseudoRandom(seed + 25.1) * .65);
+    context.strokeStyle = pseudoRandom(seed + 27.7) > .1
+      ? 'rgba(255, 220, 132, .95)'
+      : 'rgba(213, 246, 236, .9)';
+    context.lineWidth = size;
+    context.beginPath();
+    context.moveTo(x, y);
+    context.lineTo(x + Math.cos(angle) * length, y + Math.sin(angle) * length);
+    context.stroke();
+
+    if (pseudoRandom(seed + 30.3) > .7) {
+      context.beginPath();
+      context.moveTo(x + Math.cos(angle) * length * .35, y + Math.sin(angle) * length * .35);
+      context.lineTo(x + Math.cos(angle + .7) * length * .7, y + Math.sin(angle + .7) * length * .7);
+      context.stroke();
+    }
+    context.fillStyle = 'rgba(255, 245, 207, .95)';
+    context.beginPath();
+    context.arc(x, y, size * 1.2, 0, Math.PI * 2);
+    context.fill();
+  }
+  context.restore();
+}
+
+function drawCrtVignette(
+  context: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  preset: EffectPreset,
+  now: number,
+) {
+  const strength = preset.crtStrength ?? .8;
+  const flicker = .99 + Math.sin(now * .012) * .012 + Math.sin(now * .0026) * .008;
+  const gradient = context.createRadialGradient(width * .5, height * .47, Math.min(width, height) * .12, width * .5, height * .5, Math.max(width, height) * .68);
+  gradient.addColorStop(0, `rgba(255, 236, 175, ${Math.max(0, (flicker - .98) * .22)})`);
+  gradient.addColorStop(.58, 'rgba(102, 62, 19, .02)');
+  gradient.addColorStop(1, `rgba(24, 14, 5, ${.19 + strength * .08})`);
+
+  context.save();
+  context.globalCompositeOperation = 'multiply';
+  context.globalAlpha = .86;
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, width, height);
+  context.restore();
+}
+
+function drawAnalogCrt(
+  context: CanvasRenderingContext2D,
+  source: HTMLCanvasElement,
+  width: number,
+  height: number,
+  preset: EffectPreset,
+  now: number,
+) {
+  const strength = preset.crtStrength ?? .8;
+  drawAnalogSignalImage(context, source, width, height, preset, now);
+  drawAnalogChromaticMisalignment(context, source, width, height, strength, now);
+  drawCrtScanlines(context, width, height, preset, now);
+  drawAnalogNoise(context, width, height, preset, now);
+  drawAnalogSparks(context, width, height, preset, now);
+  drawCrtVignette(context, width, height, preset, now);
+}
+
 function traceHand(context: CanvasRenderingContext2D, hand: TrackedHand, videoWidth: number, videoHeight: number, width: number, height: number, now: number, alpha: number) {
   const points = hand.landmarks.map((point) => landmarkToCanvas(point, videoWidth, videoHeight, width, height));
   context.save();
@@ -155,8 +367,12 @@ export function renderFrame(input: RendererInput) {
     context.save();
     context.globalAlpha = alpha;
     clipFrame(context, polygon);
-    drawDisplacedCamera(context, source, width, height, preset, now);
-    drawChromaticGhost(context, source, width, height, preset.chroma, now);
+    if (preset.mode === 'crt') {
+      drawAnalogCrt(context, source, width, height, preset, now);
+    } else {
+      drawDisplacedCamera(context, source, width, height, preset, now);
+      drawChromaticGhost(context, source, width, height, preset.chroma, now);
+    }
     const transition = Math.min(1, (now - input.transitionAt) / 230);
     if (transition < 1) {
       context.globalAlpha = (1 - transition) * .14;

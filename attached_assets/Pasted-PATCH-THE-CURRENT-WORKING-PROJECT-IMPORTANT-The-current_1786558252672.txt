@@ -1,0 +1,601 @@
+PATCH THE CURRENT WORKING PROJECT.
+
+IMPORTANT:
+The current hand tracking, frame shape, ribbon/bow-tie behavior,
+digital hand contour, double tap, closed-hand detection,
+and camera orientation are already GOOD.
+
+DO NOT REBUILD THE PROJECT.
+
+DO NOT CHANGE:
+- hand tracking
+- four fingertip frame
+- ribbon/bow-tie geometry
+- camera orientation
+- double tap
+- closed-hand behavior
+- existing UI
+- hand contour lines.
+
+I ONLY want to upgrade the VISUAL EFFECT INSIDE THE FRAME.
+
+========================================================
+NEW EFFECT: OLD ANALOG TV / CRT DIGITAL DISTORTION
+========================================================
+
+I want the inside of the hand-controlled frame to look like
+an old analog television / CRT screen.
+
+The effect should feel:
+
+OLD TV
++
+VINTAGE ANALOG CAMERA
++
+YELLOW/AMBER CRT
++
+STATIC
++
+SCANLINES
++
+DIGITAL DISTORTION
++
+ELECTRICAL SPARKS.
+
+The effect should ONLY appear INSIDE THE HAND-CONTROLLED FRAME.
+
+Outside the frame:
+
+THE CAMERA MUST REMAIN COMPLETELY NORMAL.
+
+========================================================
+COLOR / TONE
+========================================================
+
+Give the camera inside the frame a warm old-TV color treatment.
+
+Main tone:
+
+- yellow
+- amber
+- warm cream
+- slightly brown
+- subtle orange.
+
+Do NOT make it completely yellow.
+
+The original image should still be visible.
+
+Think:
+
+old CRT television that has been aged for many years.
+
+Use:
+
+warm amber tint
++
+slightly reduced saturation
++
+warm highlights
++
+slightly dark shadows.
+
+The final image should feel nostalgic and analog.
+
+========================================================
+CRT SCANLINES
+========================================================
+
+Add subtle horizontal scanlines.
+
+The scanlines should:
+
+- move very slowly
+- vary slightly in brightness
+- be thin
+- be semi-transparent.
+
+Example concept:
+
+────────────────
+camera image
+────────────────
+camera image
+────────────────
+camera image
+
+Do NOT make the scanlines too strong.
+
+They should be visible when looking closely,
+but the face/image must remain recognizable.
+
+========================================================
+OLD TV STATIC
+========================================================
+
+Add animated analog television noise.
+
+Use:
+
+- fine film grain
+- tiny white pixels
+- tiny dark pixels
+- random noise
+- subtle luminance variation
+- analog static.
+
+The noise must continuously change.
+
+Do NOT use a static texture.
+
+Generate animated procedural noise if possible.
+
+========================================================
+TV FLICKER
+========================================================
+
+Add subtle brightness flickering.
+
+The brightness should randomly fluctuate slightly.
+
+For example:
+
+normal
+→ slightly darker
+→ normal
+→ slightly brighter
+→ normal.
+
+Keep the variation subtle.
+
+Do NOT make the entire frame flash aggressively.
+
+========================================================
+HORIZONTAL TV DISTORTION
+========================================================
+
+Add occasional horizontal displacement.
+
+Some horizontal bands can shift slightly:
+
+──────────────
+   image
+──────────────
+
+while another section is displaced a few pixels.
+
+This should happen randomly and briefly.
+
+The effect should resemble an old TV signal becoming unstable.
+
+========================================================
+VHS / ANALOG WARP
+========================================================
+
+Add subtle:
+
+- horizontal warping
+- vertical wave
+- analog tracking distortion
+- slight image bending.
+
+The distortion should make the image feel like an old recording.
+
+Do not destroy the image.
+
+========================================================
+YELLOW CRT GLOW
+========================================================
+
+Add subtle warm glow.
+
+Highlights can have:
+
+amber/yellow bloom.
+
+Bright areas of the face/background can slightly glow.
+
+Do not create a modern neon glow.
+
+It should look like the phosphor glow of an old television.
+
+========================================================
+DARK CRT EDGES
+========================================================
+
+Add subtle vignette inside the frame.
+
+The edges of the distorted image can become slightly darker.
+
+Center:
+
+brighter.
+
+Edges:
+
+slightly darker.
+
+This should make the frame feel like an old CRT display.
+
+========================================================
+ELECTRICAL SPARKS
+========================================================
+
+THIS IS VERY IMPORTANT.
+
+Add small random electrical/static sparks inside the frame.
+
+The sparks should look like:
+
+tiny bright particles
++
+short electrical streaks
++
+small white/yellow flashes.
+
+They should appear randomly and briefly.
+
+Example:
+
+        ·
+    ✦
+              ·
+  ──✧────
+          ·
+
+Use:
+
+white
+yellow
+light amber.
+
+Occasionally add a tiny cyan/white spark,
+but keep the overall color warm.
+
+========================================================
+SPARK BEHAVIOR
+========================================================
+
+The sparks must NOT be constantly visible.
+
+They should randomly:
+
+appear
++
+flash
++
+fade.
+
+Each spark lifetime:
+
+approximately 80–300ms.
+
+Some sparks should be:
+
+tiny dots.
+
+Some should be:
+
+short lines.
+
+Some should be:
+
+small branching electrical particles.
+
+Randomize:
+
+position
+size
+brightness
+direction
+lifetime.
+
+========================================================
+STATIC PARTICLES
+========================================================
+
+Add tiny analog dust/static particles.
+
+They should:
+
+- flicker
+- move slightly
+- disappear
+- reappear.
+
+Use very small particles.
+
+Do not cover the face.
+
+========================================================
+CRT GHOSTING
+========================================================
+
+Add a very subtle image persistence / ghosting effect.
+
+When the camera moves:
+
+previous pixels can leave a VERY SHORT faint trail.
+
+Example:
+
+face moves
+→
+very subtle previous image remains for a fraction of a second.
+
+Keep it subtle.
+
+Do not create a strong motion blur.
+
+========================================================
+CHROMATIC ABERRATION
+========================================================
+
+Keep a subtle RGB separation.
+
+RED:
+
+slightly displaced.
+
+BLUE:
+
+slightly displaced in the opposite direction.
+
+GREEN:
+
+closest to original.
+
+Because this is an OLD TV effect,
+the RGB separation should feel like analog signal misalignment.
+
+Do NOT make it look like a modern RGB gaming effect.
+
+========================================================
+NOISE + COLOR COMBINATION
+========================================================
+
+The final image inside the frame should combine:
+
+LIVE CAMERA
++
+WARM AMBER COLOR
++
+CRT SCANLINES
++
+ANALOG GRAIN
++
+STATIC
++
+SIGNAL DISTORTION
++
+RGB MISALIGNMENT
++
+SUBTLE VIGNETTE
++
+ELECTRICAL SPARKS
++
+OCCASIONAL GLITCH.
+
+========================================================
+IMPORTANT — DO NOT MAKE IT TOO HEAVY
+========================================================
+
+The face must remain visible.
+
+The user should still clearly recognize themselves.
+
+The effect should feel artistic rather than destructive.
+
+Target approximately:
+
+70–80% recognizable camera image
+
++
+20–30% analog TV distortion.
+
+========================================================
+FRAME MASK
+========================================================
+
+ALL of these effects must remain INSIDE the existing
+hand-controlled frame.
+
+If the frame is:
+
+rectangle
+→ effect stays inside rectangle.
+
+If the frame is:
+
+diamond
+→ effect stays inside diamond.
+
+If the frame becomes:
+
+ribbon / bow-tie
+→ effect follows the ribbon/bow-tie.
+
+If the frame rotates:
+→ effect rotates with it.
+
+If the frame changes size:
+→ effect changes size with it.
+
+DO NOT apply these effects to the full screen.
+
+========================================================
+ANIMATED EFFECT
+========================================================
+
+The effect must be continuously alive.
+
+Every frame should have slight variation:
+
+noise changes
+scanlines move
+static changes
+sparks appear/disappear
+brightness fluctuates
+distortion moves.
+
+Do not use a completely static overlay.
+
+========================================================
+EFFECT PRESET
+========================================================
+
+Add this as a NEW EFFECT PRESET.
+
+Name internally:
+
+OLD CRT
+
+or:
+
+ANALOG TV
+
+Make it one of the effects selectable using the existing
+DOUBLE-TAP INDEX FINGER system.
+
+For example:
+
+1. RGB SPLIT
+2. LIQUID GLASS
+3. CHROMATIC
+4. DIGITAL GLITCH
+5. VHS
+6. WAVE
+7. PIXEL
+8. RGB LIQUID
+9. STRONG CHROMATIC
+10. DIGITAL LENS
+11. OLD CRT
+
+Double tap should cycle to this effect naturally.
+
+========================================================
+OPTIONAL SECOND CRT VARIATION
+========================================================
+
+If performance allows, add another variation:
+
+OLD CRT — HEAVY SIGNAL
+
+Difference:
+
+OLD CRT:
+subtle yellow TV effect.
+
+OLD CRT HEAVY:
+more:
+
+- static
+- scanlines
+- horizontal tearing
+- sparks
+- flicker
+- stronger amber tint.
+
+But keep the normal OLD CRT as the primary effect.
+
+========================================================
+PERFORMANCE
+========================================================
+
+Do not significantly reduce the existing FPS.
+
+Target:
+
+30–60 FPS.
+
+Use WebGL shader calculations for:
+
+- noise
+- scanlines
+- distortion
+- RGB separation
+- color grading.
+
+Use Canvas/WebGL particles for sparks only if efficient.
+
+Avoid creating hundreds of DOM elements.
+
+Do NOT use HTML elements for every spark.
+
+Use Canvas/WebGL.
+
+========================================================
+IMPORTANT VISUAL TARGET
+========================================================
+
+The final result should look approximately like:
+
+NORMAL CAMERA
+       ↓
+┌───────────────────────┐
+│                       │
+│   WARM OLD TV IMAGE   │
+│                       │
+│  ≋ ≋ ≋ scanlines ≋    │
+│      ✦   ·            │
+│   ·      ✧            │
+│                       │
+│   ANALOG DISTORTION   │
+│                       │
+│  ·       ✦            │
+│     ≋ ≋ ≋ ≋           │
+│                       │
+└───────────────────────┘
+       ↓
+NORMAL CAMERA
+
+The frame itself remains controlled by the user's hands.
+
+========================================================
+FINAL REQUIREMENT
+========================================================
+
+DO NOT change the current working architecture.
+
+DO NOT change hand tracking.
+
+DO NOT change frame geometry.
+
+DO NOT remove ribbon/bow-tie behavior.
+
+DO NOT change camera orientation.
+
+DO NOT change the digital hand contour.
+
+DO NOT change double tap.
+
+DO NOT change closed-hand behavior.
+
+ONLY ADD:
+
+OLD ANALOG CRT / YELLOW TV EFFECT
++
+SCANLINES
++
+ANALOG STATIC
++
+GRAIN
++
+AMBER COLOR
++
+TV FLICKER
++
+HORIZONTAL SIGNAL DISTORTION
++
+RGB MISALIGNMENT
++
+SUBTLE VIGNETTE
++
+ELECTRICAL SPARKS
++
+DIGITAL/ANALOG PARTICLES.
+
+The effect must ONLY exist inside the hand-controlled frame.
+
+Make it beautiful, smooth, nostalgic, slightly mysterious,
+and futuristic at the same time.
