@@ -1,0 +1,1298 @@
+BUILD A COMPLETE WEB APPLICATION FROM SCRATCH.
+
+PROJECT NAME:
+DIGITAL HAND DISTORTION
+
+IMPORTANT:
+This is a completely new project.
+Do not assume any previous code exists.
+
+I want you to actually CREATE the complete project, install the required dependencies, configure it, and make it run successfully in the Replit preview.
+
+Do not just explain the code.
+
+Build the working application.
+
+============================================================
+1. CORE CONCEPT
+============================================================
+
+Create a futuristic experimental real-time webcam experience.
+
+The user sees their live webcam.
+
+The user raises BOTH HANDS.
+
+Four fingertips control a dynamic digital distortion frame.
+
+The four control points are:
+
+P1 = LEFT THUMB TIP
+P2 = LEFT INDEX FINGER TIP
+P3 = RIGHT INDEX FINGER TIP
+P4 = RIGHT THUMB TIP
+
+Connect:
+
+P1 → P2 → P3 → P4 → P1
+
+This creates the distortion frame.
+
+The frame is NOT a normal rectangle.
+
+It must dynamically follow the user's fingers.
+
+It can naturally become:
+
+- rectangle
+- trapezoid
+- diamond
+- rotated quadrilateral
+- narrow shape
+- wide shape
+- irregular shape
+- ribbon
+- bow-tie
+- self-intersecting shape
+
+These unusual shapes are INTENTIONAL.
+
+DO NOT force the four points into a convex hull.
+
+DO NOT sort them around the centroid.
+
+DO NOT "correct" self-intersection.
+
+DO NOT force the frame into a rectangle.
+
+The frame must preserve the natural relationship between the four fingertips.
+
+============================================================
+2. TECHNOLOGY
+============================================================
+
+Use:
+
+- React
+- TypeScript
+- Vite
+- MediaPipe Hands
+- WebGL
+- Canvas where necessary
+- requestAnimationFrame
+- Web Camera API
+
+Use:
+
+navigator.mediaDevices.getUserMedia()
+
+The project must run in the browser.
+
+No backend is required for the camera processing.
+
+============================================================
+3. START SCREEN
+============================================================
+
+Before the camera starts:
+
+Show a minimal futuristic start screen.
+
+Text:
+
+DIGITAL DISTORTION
+
+Button:
+
+START CAMERA
+
+The design should be:
+
+minimal
+dark
+futuristic
+clean.
+
+When the user presses START CAMERA:
+
+request camera permission.
+
+Once the camera is successfully running:
+
+REMOVE THE START SCREEN.
+
+Do not show the interface over the camera.
+
+============================================================
+4. FULLSCREEN CAMERA
+============================================================
+
+The camera should fill the entire viewport.
+
+Use:
+
+autoplay
+playsInline
+muted
+
+Use:
+
+facingMode: "user"
+
+The camera should behave like a normal selfie camera.
+
+The user should feel like they are looking into a mirror.
+
+============================================================
+5. MIRROR / ORIENTATION
+============================================================
+
+THIS IS EXTREMELY IMPORTANT.
+
+The webcam is a SELFIE CAMERA.
+
+The visible camera should behave like a mirror.
+
+If the user moves their real hand LEFT:
+
+the hand should visually move LEFT.
+
+If the user moves their real hand RIGHT:
+
+the hand should visually move RIGHT.
+
+The hand tracking coordinates must match the visible mirrored camera.
+
+However:
+
+DO NOT DOUBLE-MIRROR THE DISTORTION TEXTURE.
+
+There are four coordinate systems:
+
+1. Webcam video
+2. MediaPipe landmarks
+3. Canvas
+4. WebGL camera texture / UV coordinates
+
+All of them must be visually consistent.
+
+There must be ONLY ONE intentional horizontal mirror transformation.
+
+DO NOT blindly apply:
+
+x = 1 - x
+
+in multiple places.
+
+DO NOT mirror the video AND then mirror the WebGL texture again unless the rendering pipeline specifically requires it.
+
+============================================================
+6. CRITICAL IMAGE ORIENTATION REQUIREMENT
+============================================================
+
+The camera image OUTSIDE the frame and the camera image INSIDE the frame must have EXACTLY THE SAME ORIENTATION.
+
+Example:
+
+If the face outside the frame has orientation A,
+
+the face inside the frame must also have orientation A.
+
+There must never be:
+
+OUTSIDE = normal mirror
+
+INSIDE = reversed mirror.
+
+The distortion effect must NOT accidentally flip the camera texture.
+
+Inspect the WebGL UV mapping carefully.
+
+If the visible video is already mirrored using CSS:
+
+transform: scaleX(-1)
+
+do not automatically mirror the WebGL texture a second time.
+
+The distortion texture must visually match the camera.
+
+============================================================
+7. MEDIAPIPE HAND TRACKING
+============================================================
+
+Use MediaPipe Hands.
+
+Maximum hands:
+
+2.
+
+Use the hand landmarks.
+
+Important landmarks:
+
+WRIST = 0
+
+THUMB:
+1, 2, 3, 4
+
+INDEX:
+5, 6, 7, 8
+
+MIDDLE:
+9, 10, 11, 12
+
+RING:
+13, 14, 15, 16
+
+PINKY:
+17, 18, 19, 20
+
+Important fingertips:
+
+THUMB TIP = 4
+INDEX TIP = 8
+
+Track both hands continuously.
+
+Use requestAnimationFrame for visual rendering.
+
+============================================================
+8. HAND TRACKING MUST BE SMOOTH
+============================================================
+
+Tracking must feel smooth and natural.
+
+Avoid:
+
+- jitter
+- shaking
+- snapping
+- jumping
+- freezing
+- excessive latency.
+
+Use smoothed landmark coordinates.
+
+Use interpolation / lerp.
+
+Example:
+
+smoothX += (targetX - smoothX) * 0.25
+
+smoothY += (targetY - smoothY) * 0.25
+
+Tune the smoothing dynamically.
+
+When the hand moves slowly:
+
+stable.
+
+When the hand moves quickly:
+
+responsive.
+
+Do not make smoothing so strong that it feels delayed.
+
+============================================================
+9. FOUR-POINT FRAME
+============================================================
+
+Create:
+
+P1 = LEFT THUMB TIP
+
+P2 = LEFT INDEX TIP
+
+P3 = RIGHT INDEX TIP
+
+P4 = RIGHT THUMB TIP
+
+Connect exactly:
+
+P1 → P2 → P3 → P4 → P1
+
+The frame must dynamically update.
+
+If the hands move apart:
+
+frame becomes larger.
+
+If the hands move closer:
+
+frame becomes smaller.
+
+If the hands rotate:
+
+frame rotates.
+
+If fingers move independently:
+
+the corresponding corner moves.
+
+============================================================
+10. RIBBON / BOW-TIE SHAPE
+============================================================
+
+IMPORTANT:
+
+I WANT THE FRAME TO BE ABLE TO BECOME A RIBBON / BOW-TIE.
+
+Do NOT prevent this.
+
+Do NOT use:
+
+convexHull()
+
+Do NOT sort points around centroid.
+
+Do NOT force the shape into a valid convex quadrilateral.
+
+Do NOT reorder points based on their screen position.
+
+The natural order:
+
+P1 → P2 → P3 → P4 → P1
+
+must be preserved.
+
+If the user crosses their hands:
+
+the frame may naturally self-intersect.
+
+That is CORRECT.
+
+For example:
+
+P1 -------- P4
+  \        /
+   \      /
+    \    /
+     \  /
+     /  \
+    /    \
+   /      \
+  P2 ------ P3
+
+or a ribbon/bow-tie shape.
+
+The distortion mask must follow this exact geometry.
+
+============================================================
+11. DISTORTION AREA
+============================================================
+
+THIS IS THE MOST IMPORTANT VISUAL FEATURE.
+
+Outside the frame:
+
+CAMERA MUST REMAIN NORMAL.
+
+Inside the frame:
+
+CAMERA MUST BE DISTORTED.
+
+Do NOT apply the effect to the entire camera.
+
+Do NOT use:
+
+video.style.filter
+
+for the main effect.
+
+Do NOT use fullscreen:
+
+blur
+hue-rotate
+glitch
+RGB
+distortion.
+
+The distortion exists ONLY inside the hand-controlled shape.
+
+============================================================
+12. WEBGL DISTORTION
+============================================================
+
+Use WebGL if possible.
+
+Render the live webcam as a texture.
+
+Create a distortion rendering layer.
+
+Use the four fingertip coordinates to define the destination geometry.
+
+The distortion should follow:
+
+P1
+P2
+P3
+P4
+
+exactly.
+
+The shape can be:
+
+rectangle
+diamond
+rotated
+ribbon
+bow-tie.
+
+Do not replace it with a normal rectangle.
+
+============================================================
+13. DISTORTION SHADER
+============================================================
+
+Inside the frame, apply a beautiful futuristic digital distortion.
+
+Use a combination of:
+
+- UV displacement
+- animated noise
+- sine wave distortion
+- liquid displacement
+- chromatic aberration
+- RGB channel separation
+- subtle radial distortion
+- horizontal displacement
+- vertical displacement
+- digital tearing
+- subtle pixel displacement
+- subtle digital noise.
+
+The distortion must affect the ACTUAL LIVE CAMERA IMAGE.
+
+Do not just overlay colors.
+
+The face and objects inside the frame must actually bend/distort.
+
+============================================================
+14. LIQUID GLASS EFFECT
+============================================================
+
+Create a liquid glass distortion.
+
+The camera image should appear like it is viewed through:
+
+digital liquid glass
++
+transparent distorted lens.
+
+Use animated displacement.
+
+The distortion should continuously move slightly.
+
+Do not make it so strong that the face becomes unrecognizable.
+
+============================================================
+15. RGB SEPARATION
+============================================================
+
+Separate the RGB channels subtly.
+
+RED:
+
+slightly offset in one direction.
+
+BLUE:
+
+slightly offset in the opposite direction.
+
+GREEN:
+
+closer to the original.
+
+Make the effect dynamic.
+
+Do not make the whole frame red or blue.
+
+============================================================
+16. DIGITAL GLITCH
+============================================================
+
+Add subtle intermittent digital glitch.
+
+Possible effects:
+
+- horizontal tearing
+- pixel displacement
+- RGB offset
+- tiny scanline distortion
+- digital noise
+- short image displacement.
+
+The glitch should appear occasionally.
+
+Do not make it constant.
+
+The effect should feel:
+
+expensive
+modern
+futuristic
+artistic.
+
+Not like a cheap glitch filter.
+
+============================================================
+17. MULTIPLE EFFECT PRESETS
+============================================================
+
+Create at least 10 distinct effects.
+
+Effect 1:
+RGB SPLIT
+
+Effect 2:
+LIQUID GLASS
+
+Effect 3:
+CHROMATIC ABERRATION
+
+Effect 4:
+DIGITAL GLITCH
+
+Effect 5:
+VHS DISTORTION
+
+Effect 6:
+WAVE DISTORTION
+
+Effect 7:
+PIXEL DISPLACEMENT
+
+Effect 8:
+RGB LIQUID
+
+Effect 9:
+STRONG CHROMATIC
+
+Effect 10:
+DIGITAL LENS MIX
+
+Each effect must actually change the distortion behavior.
+
+Do NOT merely change the color.
+
+============================================================
+18. DOUBLE TAP TO CHANGE EFFECT
+============================================================
+
+The user changes effects using:
+
+DOUBLE TAP WITH INDEX FINGER.
+
+No button.
+
+No keyboard.
+
+No mouse.
+
+Detect double tap using the INDEX FINGER TIP.
+
+Use:
+
+- fingertip velocity
+- movement distance
+- timing.
+
+Double tap window:
+
+150–450 ms.
+
+Cooldown:
+
+500–800 ms.
+
+This prevents one gesture from skipping several effects.
+
+============================================================
+19. EFFECT SEQUENCE
+============================================================
+
+The sequence is:
+
+1
+→ 2
+→ 3
+→ 4
+→ 5
+→ 6
+→ 7
+→ 8
+→ 9
+→ 10
+→ 1
+
+Every valid double tap advances one effect.
+
+============================================================
+20. EFFECT TRANSITION
+============================================================
+
+When the effect changes:
+
+use a subtle transition.
+
+Duration:
+
+150–300 ms.
+
+Do not flash the whole screen.
+
+The transition must remain inside the frame.
+
+============================================================
+21. CLOSED HAND DETECTION
+============================================================
+
+When the user closes their hand:
+
+THE FRAME MUST DISAPPEAR.
+
+Do not freeze the last frame.
+
+Do not leave the polygon at its previous position.
+
+Do not leave an empty box.
+
+Use a short fade out:
+
+100–200 ms.
+
+Then completely stop rendering the frame.
+
+The camera becomes normal.
+
+============================================================
+22. OPEN HAND AGAIN
+============================================================
+
+When the user opens their hands again:
+
+the frame appears smoothly.
+
+Fade in:
+
+150–250 ms.
+
+Keep the current effect.
+
+Do not reset to effect 1.
+
+============================================================
+23. NO HAND
+============================================================
+
+If no valid hands are detected:
+
+hide the frame.
+
+Return to normal camera.
+
+Do not leave a frozen frame.
+
+============================================================
+24. DIGITAL HAND CONTOUR
+============================================================
+
+Add a futuristic digital tracing effect to the hands.
+
+This must NOT look like a MediaPipe debugging skeleton.
+
+It should look like:
+
+DIGITAL HAND SCANNING
++
+HOLOGRAPHIC TECHNOLOGY
++
+FUTURISTIC CIRCUIT TRACE.
+
+Use the smoothed MediaPipe landmarks.
+
+Finger paths:
+
+THUMB:
+1 → 2 → 3 → 4
+
+INDEX:
+5 → 6 → 7 → 8
+
+MIDDLE:
+9 → 10 → 11 → 12
+
+RING:
+13 → 14 → 15 → 16
+
+PINKY:
+17 → 18 → 19 → 20
+
+Optionally connect the palm:
+
+0 → 5 → 9 → 13 → 17
+
+but keep it subtle.
+
+============================================================
+25. DIGITAL LINE STYLE
+============================================================
+
+Do NOT draw simple continuous skeleton lines.
+
+Use:
+
+- thin segmented lines
+- small gaps
+- tiny glowing nodes
+- subtle cyan/blue glow
+- small digital ticks
+- tiny scan pulses
+- subtle RGB offset.
+
+The visual should look like a futuristic scanner tracing the fingers.
+
+Example:
+
+──────●─────  ───●────
+
+rather than:
+
+●────────────●
+
+============================================================
+26. DIGITAL NODES
+============================================================
+
+Add tiny glowing nodes at selected fingertip positions.
+
+Especially:
+
+thumb tip
+index tip
+middle tip
+ring tip
+pinky tip.
+
+Node size:
+
+approximately 1–3px.
+
+Do not put large circles on every joint.
+
+Do not display landmark numbers.
+
+Do not display debug points.
+
+============================================================
+27. DIGITAL SCAN ANIMATION
+============================================================
+
+Add a subtle moving light along some finger lines.
+
+Example:
+
+────────●──────────
+
+The glowing point slowly travels along the line.
+
+Keep it subtle.
+
+The hand should feel like it is being scanned.
+
+============================================================
+28. HAND CONTOUR FADE
+============================================================
+
+When the hand appears:
+
+finger digital lines fade in.
+
+When the hand disappears:
+
+fade out.
+
+When the hand closes:
+
+fade out.
+
+Do not freeze them.
+
+============================================================
+29. NO FACE TRACKING
+============================================================
+
+Do NOT use:
+
+face detection
+face mesh
+face landmarks.
+
+The face is simply part of the camera image.
+
+If the face is inside the distortion:
+
+the face gets distorted.
+
+If the face is outside:
+
+the face remains normal.
+
+============================================================
+30. NO UI OVER CAMERA
+============================================================
+
+Once the camera is active:
+
+DO NOT SHOW:
+
+FPS
+hand count
+coordinates
+effect name
+tracking status
+camera status
+landmark numbers
+instructions
+debug labels.
+
+The camera must be clean.
+
+Only:
+
+LIVE CAMERA
++
+DIGITAL HAND LINES
++
+HAND CONTROLLED DISTORTION.
+
+============================================================
+31. DEBUG MODE
+============================================================
+
+Create:
+
+const DEBUG = false;
+
+If DEBUG = false:
+
+hide all debug information.
+
+If DEBUG = true:
+
+allow:
+
+- landmarks
+- fingertip points
+- FPS
+- current effect
+- hand state.
+
+Default:
+
+DEBUG = false.
+
+============================================================
+32. RESPONSIVE
+============================================================
+
+Support:
+
+desktop
+laptop
+tablet
+Android
+iPhone.
+
+Support:
+
+portrait
+landscape.
+
+Correctly handle:
+
+video aspect ratio
+canvas dimensions
+devicePixelRatio
+mirrored camera
+MediaPipe coordinates
+WebGL coordinates.
+
+============================================================
+33. PERFORMANCE
+============================================================
+
+Target:
+
+30–60 FPS.
+
+Use GPU/WebGL where possible.
+
+Use requestAnimationFrame.
+
+Avoid unnecessary React re-renders.
+
+Do NOT put every MediaPipe landmark into React state.
+
+Use refs / mutable objects for high-frequency tracking data.
+
+Use one camera stream.
+
+Use one MediaPipe Hands instance.
+
+Keep rendering efficient.
+
+============================================================
+34. PROJECT STRUCTURE
+============================================================
+
+Create a clean modular architecture.
+
+Suggested:
+
+src/
+  components/
+    StartScreen.tsx
+    CameraView.tsx
+
+  handTracking/
+    MediaPipeHands.ts
+    landmarks.ts
+    smoothing.ts
+    gestureDetection.ts
+
+  rendering/
+    WebGLRenderer.ts
+    cameraTexture.ts
+    distortionShader.ts
+    maskRenderer.ts
+
+  effects/
+    EffectManager.ts
+    effectPresets.ts
+
+  utils/
+    coordinates.ts
+    geometry.ts
+
+  App.tsx
+
+You may modify the structure if needed.
+
+Do not create one giant file.
+
+============================================================
+35. IMPORTANT RENDERING RULE
+============================================================
+
+The rendering pipeline should conceptually be:
+
+WEBCAM
+   ↓
+CAMERA TEXTURE
+   ↓
+NORMAL CAMERA BACKGROUND
+   ↓
+DISTORTION MASK
+   ↓
+HAND-CONTROLLED P1/P2/P3/P4 GEOMETRY
+   ↓
+DISTORTION SHADER
+   ↓
+COMPOSITE
+   ↓
+FINAL SCREEN.
+
+Outside the mask:
+
+normal camera.
+
+Inside the mask:
+
+distorted camera.
+
+============================================================
+36. FRAME GEOMETRY
+============================================================
+
+Do NOT use:
+
+convex hull.
+
+Do NOT sort points.
+
+Do NOT automatically reorder the points.
+
+Use:
+
+P1 → P2 → P3 → P4 → P1.
+
+The user controls the geometry.
+
+If the user makes a ribbon:
+
+render ribbon.
+
+If the user makes a bow-tie:
+
+render bow-tie.
+
+If the user makes a diamond:
+
+render diamond.
+
+If the user makes a rectangle:
+
+render rectangle.
+
+============================================================
+37. SELF-INTERSECTION
+============================================================
+
+The renderer MUST support self-intersecting shapes.
+
+Do not assume the polygon is always convex.
+
+If WebGL stencil rendering is used:
+
+implement a fill rule that can handle the intended ribbon/bow-tie shape.
+
+If Canvas 2D is used:
+
+use the appropriate clipping/fill behavior.
+
+The visual distortion should follow the shape created by the user.
+
+============================================================
+38. TEXTURE MAPPING
+============================================================
+
+The camera texture mapping is CRITICAL.
+
+The texture must match the visible camera orientation.
+
+Do not accidentally flip it.
+
+Do not accidentally rotate it.
+
+Do not mirror it twice.
+
+The image inside the distortion frame must have the SAME orientation as the image outside.
+
+Test using:
+
+face
+eyes
+clothing
+hair
+asymmetric objects
+text if visible.
+
+============================================================
+39. STARTUP ERROR HANDLING
+============================================================
+
+If camera permission is denied:
+
+show a simple message before the camera starts.
+
+If the camera is unavailable:
+
+show a simple error.
+
+Do not put error messages over the active camera.
+
+============================================================
+40. FINAL EXPERIENCE
+============================================================
+
+The final experience should feel like an experimental futuristic digital-art camera.
+
+User opens the application.
+
+User clicks:
+
+START CAMERA.
+
+The webcam fills the screen.
+
+User raises both hands.
+
+The four fingertips create a digital window.
+
+The window follows the fingers.
+
+The window can become:
+
+rectangle
+diamond
+rotated shape
+ribbon
+bow-tie.
+
+Inside the window:
+
+the live camera bends and distorts.
+
+The face inside the window is distorted.
+
+RGB channels subtly separate.
+
+Liquid glass displacement moves.
+
+Occasional digital glitches occur.
+
+Outside the window:
+
+the camera remains completely normal.
+
+The hands themselves have:
+
+thin futuristic digital tracing
++
+tiny glowing nodes
++
+digital scan pulses
++
+subtle cyan/blue technology lines.
+
+The user double taps the index finger:
+
+effect changes.
+
+Double tap again:
+
+another effect.
+
+The user closes their hands:
+
+the frame disappears.
+
+The user opens their hands:
+
+the frame returns.
+
+The effect remains selected.
+
+Everything should feel:
+
+SMOOTH
+REAL-TIME
+FUTURISTIC
+DIGITAL
+MINIMAL
+ARTISTIC
+RESPONSIVE.
+
+============================================================
+41. ACCEPTANCE TEST
+============================================================
+
+The project is NOT complete until ALL of these work:
+
+[ ] Camera starts.
+[ ] Camera is fullscreen.
+[ ] Camera behaves like a selfie mirror.
+[ ] Hand tracking works.
+[ ] Two hands work.
+[ ] Four fingertips are tracked.
+[ ] Tracking is smooth.
+[ ] Frame follows fingertips.
+[ ] Frame is not fixed.
+[ ] Frame can rotate.
+[ ] Frame can resize.
+[ ] Frame can become diamond.
+[ ] Frame can become ribbon.
+[ ] Frame can become bow-tie.
+[ ] Self-intersection is allowed.
+[ ] No convex hull correction.
+[ ] Outside frame is normal.
+[ ] Inside frame is distorted.
+[ ] Distortion follows exact frame geometry.
+[ ] Image inside frame has correct orientation.
+[ ] Image inside frame is NOT double-mirrored.
+[ ] Face inside frame is distorted.
+[ ] Face outside frame is normal.
+[ ] RGB effect works.
+[ ] Liquid glass works.
+[ ] Glitch works.
+[ ] Multiple effects work.
+[ ] Double tap changes effect.
+[ ] Closed hand hides frame.
+[ ] Open hand restores frame.
+[ ] Digital hand contour appears.
+[ ] Digital hand contour looks futuristic.
+[ ] No MediaPipe debug skeleton.
+[ ] No text over camera.
+[ ] No FPS overlay.
+[ ] No debug overlay.
+[ ] Performance is smooth.
+[ ] Works on desktop.
+[ ] Works on mobile.
+
+============================================================
+42. VERY IMPORTANT PRIORITY
+============================================================
+
+Prioritize these in this exact order:
+
+1. STABLE CAMERA
+2. STABLE TWO-HAND TRACKING
+3. CORRECT MIRRORED COORDINATES
+4. FOUR FINGERTIP FRAME
+5. RIBBON / BOW-TIE SUPPORT
+6. CORRECT CAMERA TEXTURE ORIENTATION
+7. DISTORTION INSIDE FRAME ONLY
+8. SMOOTH DISTORTION
+9. DIGITAL HAND CONTOUR
+10. MULTIPLE EFFECTS
+11. DOUBLE TAP
+12. CLOSED HAND
+13. PERFORMANCE
+14. VISUAL POLISH
+
+If an effect causes tracking to break:
+
+FIX THE TRACKING FIRST.
+
+If WebGL distortion causes coordinate problems:
+
+FIX THE COORDINATE SYSTEM FIRST.
+
+Do not sacrifice tracking stability for visual effects.
+
+============================================================
+43. FINAL CRITICAL INSTRUCTION
+============================================================
+
+DO NOT BUILD A NORMAL HAND-TRACKING DEMO.
+
+DO NOT BUILD A FACE FILTER.
+
+DO NOT BUILD A FULLSCREEN GLITCH FILTER.
+
+DO NOT BUILD A STATIC TRANSPARENT RECTANGLE.
+
+BUILD:
+
+A REAL-TIME HAND-CONTROLLED DIGITAL DISTORTION WINDOW.
+
+The user's fingers should physically control the shape.
+
+The shape should be able to become a ribbon/bow-tie.
+
+The camera inside the shape should be distorted.
+
+The camera outside the shape should remain normal.
+
+The image inside and outside must have the SAME orientation.
+
+The hands should have futuristic digital tracing.
+
+Double tap should change effects.
+
+Closed hands should remove the frame.
+
+The final result should look like a polished experimental digital-art installation rather than a coding demo.
+
+NOW BUILD THE COMPLETE PROJECT.

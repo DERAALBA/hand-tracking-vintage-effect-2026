@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Digital Hand Distortion"
+description = "A real-time experimental camera installation where both hands control a living digital distortion window with fingertip gestures and holographic hand tracing."
+version = "1.0.0"
+id = "artifacts/digital-hand-distortion"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22531
+
+[services.development]
+run = "pnpm --filter @workspace/digital-hand-distortion run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/digital-hand-distortion", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/digital-hand-distortion/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22531"
+BASE_PATH = "/"
