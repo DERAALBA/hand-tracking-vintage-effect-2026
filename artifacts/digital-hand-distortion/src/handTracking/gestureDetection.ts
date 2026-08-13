@@ -1,3 +1,4 @@
+```ts
 import type { Landmark } from '../types';
 import { distance } from '../utils/geometry';
 
@@ -27,29 +28,30 @@ export function isHandOpen(points: Landmark[]) {
 }
 
 /**
- * Detects a real double pinch:
+ * Easy double-finger gesture.
  *
- * PINCH → RELEASE → PINCH
+ * Gesture:
+ *   🤏 → release sedikit → 🤏
  *
- * Thumb tip = landmark 4
- * Index tip = landmark 8
+ * Tidak perlu menyentuhkan jempol dan telunjuk
+ * dengan sangat rapat.
  */
 export class DoubleTapDetector {
   private pinching = false;
   private firstTapAt = -Infinity;
   private lastTriggerAt = -Infinity;
 
-  // Increased so the gesture is easier to perform.
-  private readonly pinchThreshold = 0.085;
+  // Dibuat longgar supaya gesture mudah dilakukan.
+  private readonly pinchThreshold = 0.11;
 
-  // Fingers must separate this much before another pinch.
-  private readonly releaseThreshold = 0.105;
+  // Tidak perlu membuka jari terlalu jauh.
+  private readonly releaseThreshold = 0.13;
 
-  // Maximum time between the two pinches.
+  // Waktu antar tap dibuat lebih panjang.
   private readonly doubleTapWindow = 1000;
 
-  // Prevent accidental multiple triggers.
-  private readonly cooldown = 900;
+  // Mencegah satu gesture menghasilkan banyak perubahan.
+  private readonly cooldown = 700;
 
   update(points: Landmark[], now: number): boolean {
     if (points.length < 21) {
@@ -71,8 +73,8 @@ export class DoubleTapDetector {
     const isRelease = pinchDistance >= this.releaseThreshold;
 
     /*
-     * If the fingers are currently touching,
-     * wait until they separate.
+     * Kalau sedang dalam kondisi tap,
+     * tunggu sampai jari sedikit menjauh.
      */
     if (this.pinching) {
       if (isRelease) {
@@ -83,26 +85,26 @@ export class DoubleTapDetector {
     }
 
     /*
-     * Nothing happens until a new pinch starts.
+     * Belum melakukan tap.
      */
     if (!isPinch) {
       return false;
     }
 
     /*
-     * Register this as a NEW pinch.
+     * Tap baru terdeteksi.
      */
     this.pinching = true;
 
     /*
-     * Ignore gestures during cooldown.
+     * Hindari trigger berulang terlalu cepat.
      */
     if (now - this.lastTriggerAt < this.cooldown) {
       return false;
     }
 
     /*
-     * First pinch.
+     * TAP PERTAMA
      */
     if (now - this.firstTapAt > this.doubleTapWindow) {
       this.firstTapAt = now;
@@ -110,8 +112,9 @@ export class DoubleTapDetector {
     }
 
     /*
-     * Second pinch detected.
-     * Change the effect.
+     * TAP KEDUA
+     *
+     * Double tap berhasil.
      */
     this.lastTriggerAt = now;
     this.firstTapAt = -Infinity;
@@ -119,3 +122,4 @@ export class DoubleTapDetector {
     return true;
   }
 }
+```
