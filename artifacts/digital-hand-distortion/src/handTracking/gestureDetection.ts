@@ -27,34 +27,33 @@ export function isHandOpen(points: Landmark[]) {
 }
 
 /**
- * Detects:
+ * Detects a real double pinch:
  *
  * PINCH → RELEASE → PINCH
  *
- * using the thumb tip (4) and index finger tip (8).
- *
- * One successful sequence = one effect change.
+ * Thumb tip = landmark 4
+ * Index tip = landmark 8
  */
 export class DoubleTapDetector {
-  private isPinching = false;
+  private pinching = false;
   private firstTapAt = -Infinity;
   private lastTriggerAt = -Infinity;
 
-  // How close thumb and index finger must be.
-  private readonly pinchThreshold = 0.055;
+  // Increased so the gesture is easier to perform.
+  private readonly pinchThreshold = 0.085;
 
-  // How far they must separate before another tap is allowed.
-  private readonly releaseThreshold = 0.075;
+  // Fingers must separate this much before another pinch.
+  private readonly releaseThreshold = 0.105;
 
-  // Maximum time allowed between first and second tap.
-  private readonly doubleTapWindow = 650;
+  // Maximum time between the two pinches.
+  private readonly doubleTapWindow = 1000;
 
-  // Prevent accidental repeated triggers.
-  private readonly cooldown = 800;
+  // Prevent accidental multiple triggers.
+  private readonly cooldown = 900;
 
-  update(points: Landmark[], now: number) {
+  update(points: Landmark[], now: number): boolean {
     if (points.length < 21) {
-      this.isPinching = false;
+      this.pinching = false;
       return false;
     }
 
@@ -62,38 +61,41 @@ export class DoubleTapDetector {
     const indexTip = points[8];
 
     if (!thumbTip || !indexTip) {
-      this.isPinching = false;
+      this.pinching = false;
       return false;
     }
 
     const pinchDistance = distance(thumbTip, indexTip);
 
-    const pinching = pinchDistance <= this.pinchThreshold;
-    const released = pinchDistance >= this.releaseThreshold;
+    const isPinch = pinchDistance <= this.pinchThreshold;
+    const isRelease = pinchDistance >= this.releaseThreshold;
 
     /*
-     * While fingers are still touching,
-     * do nothing. This prevents repeated triggers.
+     * If the fingers are currently touching,
+     * wait until they separate.
      */
-    if (this.isPinching) {
-      if (released) {
-        this.isPinching = false;
+    if (this.pinching) {
+      if (isRelease) {
+        this.pinching = false;
       }
 
       return false;
     }
 
     /*
-     * We only react when a NEW pinch begins.
+     * Nothing happens until a new pinch starts.
      */
-    if (!pinching) {
+    if (!isPinch) {
       return false;
     }
 
-    this.isPinching = true;
+    /*
+     * Register this as a NEW pinch.
+     */
+    this.pinching = true;
 
     /*
-     * Cooldown after a successful double tap.
+     * Ignore gestures during cooldown.
      */
     if (now - this.lastTriggerAt < this.cooldown) {
       return false;
@@ -108,7 +110,8 @@ export class DoubleTapDetector {
     }
 
     /*
-     * Second pinch within the allowed window.
+     * Second pinch detected.
+     * Change the effect.
      */
     this.lastTriggerAt = now;
     this.firstTapAt = -Infinity;
