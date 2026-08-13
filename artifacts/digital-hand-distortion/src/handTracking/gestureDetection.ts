@@ -1,4 +1,3 @@
-```ts
 import type { Landmark } from '../types';
 import { distance } from '../utils/geometry';
 
@@ -100,4 +99,3 @@ export class DoubleTapDetector {
     return true;
   }
 }
-```
