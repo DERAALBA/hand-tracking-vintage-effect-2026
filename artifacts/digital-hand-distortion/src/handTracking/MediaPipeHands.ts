@@ -104,9 +104,16 @@ export class MediaPipeHands {
       next[side] = { side, landmarks: smoothed, open: isHandOpen(smoothed) };
     });
     const now = performance.now();
-    const leftTap = next.left?.landmarks[8] && this.leftIndexTap.update(next.left.landmarks[8], now);
-    const rightTap = next.right?.landmarks[8] && this.rightIndexTap.update(next.right.landmarks[8], now);
-    if (leftTap || rightTap) this.callbacks.onCycle();
+
+const leftTap = next.left?.landmarks
+  ? this.leftIndexTap.update(next.left.landmarks, now)
+  : false;
+
+const rightTap = next.right?.landmarks
+  ? this.rightIndexTap.update(next.right.landmarks, now)
+  : false;
+
+if (leftTap || rightTap) this.callbacks.onCycle();
     this.callbacks.onFrame(next, now);
   }
 }
