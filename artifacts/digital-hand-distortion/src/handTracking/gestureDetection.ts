@@ -27,35 +27,27 @@ export function isHandOpen(points: Landmark[]) {
   return extended + (thumbExtended ? 1 : 0) >= 3;
 }
 
-/**
- * Easy double-finger gesture.
- *
- * Gesture:
- *   🤏 → release sedikit → 🤏
- *
- * Tidak perlu menyentuhkan jempol dan telunjuk
- * dengan sangat rapat.
- */
 export class DoubleTapDetector {
-  private pinching = false;
+  private isPinching = false;
   private firstTapAt = -Infinity;
   private lastTriggerAt = -Infinity;
 
-  // Dibuat longgar supaya gesture mudah dilakukan.
+  // Dibuat lebih longgar supaya tidak perlu
+  // menempelkan jempol dan telunjuk dengan presisi.
   private readonly pinchThreshold = 0.11;
 
-  // Tidak perlu membuka jari terlalu jauh.
+  // Jari cukup menjauh sedikit untuk dianggap release.
   private readonly releaseThreshold = 0.13;
 
-  // Waktu antar tap dibuat lebih panjang.
+  // Waktu antar dua tap diperlonggar.
   private readonly doubleTapWindow = 1000;
 
-  // Mencegah satu gesture menghasilkan banyak perubahan.
+  // Mencegah satu gerakan menghasilkan banyak trigger.
   private readonly cooldown = 700;
 
   update(points: Landmark[], now: number): boolean {
     if (points.length < 21) {
-      this.pinching = false;
+      this.isPinching = false;
       return false;
     }
 
@@ -63,59 +55,45 @@ export class DoubleTapDetector {
     const indexTip = points[8];
 
     if (!thumbTip || !indexTip) {
-      this.pinching = false;
+      this.isPinching = false;
       return false;
     }
 
     const pinchDistance = distance(thumbTip, indexTip);
 
-    const isPinch = pinchDistance <= this.pinchThreshold;
-    const isRelease = pinchDistance >= this.releaseThreshold;
+    const pinching = pinchDistance <= this.pinchThreshold;
+    const released = pinchDistance >= this.releaseThreshold;
 
-    /*
-     * Kalau sedang dalam kondisi tap,
-     * tunggu sampai jari sedikit menjauh.
-     */
-    if (this.pinching) {
-      if (isRelease) {
-        this.pinching = false;
+    // Sedang dalam kondisi tap.
+    // Tunggu sampai jari sedikit menjauh.
+    if (this.isPinching) {
+      if (released) {
+        this.isPinching = false;
       }
 
       return false;
     }
 
-    /*
-     * Belum melakukan tap.
-     */
-    if (!isPinch) {
+    // Belum cukup dekat untuk dianggap tap.
+    if (!pinching) {
       return false;
     }
 
-    /*
-     * Tap baru terdeteksi.
-     */
-    this.pinching = true;
+    // Tap baru dimulai.
+    this.isPinching = true;
 
-    /*
-     * Hindari trigger berulang terlalu cepat.
-     */
+    // Cooldown setelah efek berubah.
     if (now - this.lastTriggerAt < this.cooldown) {
       return false;
     }
 
-    /*
-     * TAP PERTAMA
-     */
+    // Tap pertama.
     if (now - this.firstTapAt > this.doubleTapWindow) {
       this.firstTapAt = now;
       return false;
     }
 
-    /*
-     * TAP KEDUA
-     *
-     * Double tap berhasil.
-     */
+    // Tap kedua berhasil.
     this.lastTriggerAt = now;
     this.firstTapAt = -Infinity;
 
